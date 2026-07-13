@@ -1,0 +1,8 @@
+sac_env/
+__pycache__/
+*.pyc
+logs/
+*.zip
+*.npz
+.ipynb_checkpoints/
+.DS_Store
