@@ -1,0 +1,8 @@
+Using cpu device
+Wrapping the env with a `Monitor` wrapper
+Wrapping the env in a DummyVecEnv.
+Traceback (most recent call last):
+  File "C:\Users\joshg\Documents\1. Northeastern\2nd Semester\RL_Capstone\training.py", line 69, in <module>
+    model_save_path=f"{config.MODEL_DIR}/{run.id}",
+                       ^^^^^^^^^^^^^^^^
+AttributeError: module 'config' has no attribute 'MODEL_DIR'

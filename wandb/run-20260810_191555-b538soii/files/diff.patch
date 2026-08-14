@@ -1,0 +1,120 @@
+diff --git a/config.py b/config.py
+index b35ca41..e1fb7e2 100644
+--- a/config.py
++++ b/config.py
+@@ -1,14 +1,20 @@
+ # Environment and training
+-ENV_NAME = "Hopper-v4"  # or ant
+-TOTAL_TIMESTEPS = 1_000_000
+-ALGORITHM = "SAC"  # or "DDPG"
++ENV_NAME = "Hopper-v4"  
++TOTAL_TIMESTEPS = 100_000
++ALGORITHM = "PPO"  # Options: "SAC", "DDPG", "PPO"
+ 
+-# Hyperparameters
+-LEARNING_RATE = 3e-4 
+-REWARD_SCALE = 1.0   
++# Hyperparameters Used SB3 defaults for SAC and DDPG
++if ALGORITHM == "SAC":
++    LEARNING_RATE = 3e-4
++elif ALGORITHM == "DDPG":
++    LEARNING_RATE = 1e-3
++elif ALGORITHM == "PPO":
++    LEARNING_RATE = 3e-4
++
++REWARD_SCALE = 1.0
+ 
+ # Seeds and eval
+-SEED = 0
++SEED = 0 #Change each time you run the code to get different results
+ EVAL_FREQ = 10_000    
+ N_EVAL_EPISODES = 10
+ 
+diff --git a/training.py b/training.py
+index 0e3b72e..72dc69b 100644
+--- a/training.py
++++ b/training.py
+@@ -1,5 +1,5 @@
+ import gymnasium as gym
+-from stable_baselines3 import SAC, DDPG
++from stable_baselines3 import SAC, DDPG, PPO
+ from stable_baselines3.common.callbacks import EvalCallback
+ from stable_baselines3.common.utils import set_random_seed
+ import config
+@@ -7,14 +7,14 @@ import wandb
+ from wandb.integration.sb3 import WandbCallback
+ 
+ 
+-# Set seed
++#Set seed
+ set_random_seed(config.SEED) #Sets seeds for random number generators in Python, NumPy, and PyTorch to ensure reproducibility.
+ 
+-# Create env
++#Create Env
+ env = gym.make(config.ENV_NAME)
+ env.reset(seed=config.SEED) #Resets the environment to an initial state and sets the seed for the environment's random number generator.
+ 
+-#evaluation environment
++#Evaluation environment - used to evaluate agent's training. This makes sure our evaluation is not biased.
+ eval_env = gym.make(config.ENV_NAME)
+ 
+ # Initialize wandb
+@@ -32,7 +32,7 @@ run = wandb.init(
+     save_code=True,
+ )
+ 
+-# Initialize agent
++# Initialize agent - identify what Algo we are using
+ if config.ALGORITHM == "SAC":
+     model = SAC(
+         "MlpPolicy", 
+@@ -51,31 +51,39 @@ elif config.ALGORITHM == "DDPG":
+         tensorboard_log=f"./logs/tensorboard/{run.id}", 
+         seed=config.SEED
+         )
+-
++elif config.ALGORITHM == "PPO":
++    model = PPO(
++        "MlpPolicy", 
++        env, 
++        learning_rate=config.LEARNING_RATE, 
++        verbose=1, 
++        tensorboard_log=f"./logs/tensorboard/{run.id}", 
++        seed=config.SEED
++        )
+ #EvalCallback handles evaluation of the agent during training.
+-# It periodically evaluates the agent's performance on a separate evaluation environment and can save the best model based on evaluation results.
++#It periodically evaluates the agent's performance on a separate evaluation environment and can save the best model based on evaluation results.
+ eval_callback = EvalCallback(
+     eval_env,
+-    best_model_save_path=f"{config.CHECKPOINT_DIR}/best_model",
+-    log_path=f"{config.CHECKPOINT_DIR}/results",
+-    eval_freq=config.EVAL_FREQ,           # ← Use config instead of 10000
+-    n_eval_episodes=config.N_EVAL_EPISODES,  # ← Use config instead of 5
++    best_model_save_path=f"{config.CHECKPOINT_DIR}/best_model",#saves best model based on evaluation results
++    log_path=f"{config.CHECKPOINT_DIR}/results",#SAVES EVALUATION RESULTS 
++    eval_freq=config.EVAL_FREQ, #when to evaluate the agent
++    n_eval_episodes=config.N_EVAL_EPISODES, #How many episodes to run for each evaluation
+     deterministic=True,
+     render=False,
+ )
+-# WandbCallback tracks hyperparams, gradients, and metrics during learn()
++#WandbCallback tracks hyperparams, gradients, and metrics during learn()
+ wandb_callback = WandbCallback(
+     gradient_save_freq=100,
+     model_save_path=f"{config.MODEL_DIR}/{run.id}",
+     verbose=2,
+ )
+ 
+-# Actual Training
++#Actual Training
+ model.learn(
+     total_timesteps=config.TOTAL_TIMESTEPS,
+     callback=[eval_callback, wandb_callback],
+     tb_log_name=f"{config.ALGORITHM}_{config.ENV_NAME}"
+ )
+ 
+-# 7. Close Wandb run
++#Close Wandb run
+ run.finish()
+\ No newline at end of file

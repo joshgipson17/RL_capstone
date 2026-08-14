@@ -1,0 +1,28 @@
+{
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "CPython 3.13.3",
+  "startedAt": "2026-08-01T22:05:52.355036Z",
+  "program": "C:\\Users\\joshg\\Documents\\1. Northeastern\\2nd Semester\\RL_Capstone\\training.py",
+  "codePath": "training.py",
+  "codePathLocal": "training.py",
+  "git": {
+    "remote": "https://github.com/joshgipson17/RL_capstone.git",
+    "commit": "fc7abc07af5552330fdbbb36ea8f4f44af49c842"
+  },
+  "email": "joshgipson17@gmail.com",
+  "root": "C:\\Users\\joshg\\Documents\\1. Northeastern\\2nd Semester\\RL_Capstone",
+  "host": "JsDell",
+  "executable": "C:\\Users\\joshg\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+  "cpu_count": 8,
+  "cpu_count_logical": 16,
+  "disk": {
+    "/": {
+      "total": "390558007296",
+      "used": "278736633856"
+    }
+  },
+  "memory": {
+    "total": "16886083584"
+  },
+  "writerId": "sltgnwmzv9y507nqqkh784pggwmcksc5"
+}

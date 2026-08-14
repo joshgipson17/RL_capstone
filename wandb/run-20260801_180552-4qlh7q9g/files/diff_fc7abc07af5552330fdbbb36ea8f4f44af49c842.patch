@@ -1,0 +1,29 @@
+diff --git a/config.py b/config.py
+index b35ca41..f5559f8 100644
+--- a/config.py
++++ b/config.py
+@@ -1,14 +1,18 @@
+ # Environment and training
+ ENV_NAME = "Hopper-v4"  # or ant
+-TOTAL_TIMESTEPS = 1_000_000
+-ALGORITHM = "SAC"  # or "DDPG"
++TOTAL_TIMESTEPS = 100_000
++ALGORITHM = "DDPG"  # or "DDPG"
+ 
+-# Hyperparameters
+-LEARNING_RATE = 3e-4 
+-REWARD_SCALE = 1.0   
++# Hyperparameters Used SB3 defaults for SAC and DDPG
++if ALGORITHM == "SAC":
++    LEARNING_RATE = 3e-4
++elif ALGORITHM == "DDPG":
++    LEARNING_RATE = 1e-3
++
++REWARD_SCALE = 1.0
+ 
+ # Seeds and eval
+-SEED = 0
++SEED = 0 #Change each time you run the code to get different results
+ EVAL_FREQ = 10_000    
+ N_EVAL_EPISODES = 10
+ 

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\joshg\Documents\1. Northeastern\2nd Semester\RL_Capstone\training.py", line 37, in <module>
+    model = SAC(
+        "MlpPolicy",
+    ...<5 lines>...
+        seed=config.SEED
+        )
+TypeError: SAC.__init__() got an unexpected keyword argument 'reward_scale'
